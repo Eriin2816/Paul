@@ -14,6 +14,7 @@ const DONATION_AMOUNTS = [25, 50, 100, 250, 500]
 
 interface FormData {
   fullName: string
+  email: string
   address: string
   city: string
   state: string
@@ -26,7 +27,7 @@ interface FormData {
 }
 
 const INITIAL: FormData = {
-  fullName: '', address: '', city: '', state: 'CA', zip: '',
+  fullName: '', email: '', address: '', city: '', state: 'CA', zip: '',
   occupation: '', employer: '', amount: '', customAmount: '', message: '',
 }
 
@@ -75,6 +76,8 @@ export default function ContributeDialog({ onClose }: ContributeDialogProps) {
   const validate = (): boolean => {
     const e: Partial<Record<keyof FormData, string>> = {}
     if (!form.fullName.trim()) e.fullName = 'Full name is required.'
+    if (!form.email.trim()) e.email = 'Email address is required.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Please enter a valid email address.'
     if (!form.address.trim()) e.address = 'Address is required.'
     if (!form.city.trim()) e.city = 'City is required.'
     if (!form.zip.trim()) e.zip = 'ZIP code is required.'
@@ -97,6 +100,7 @@ export default function ContributeDialog({ onClose }: ContributeDialogProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             fullName: form.fullName,
+            email: form.email,
             address: form.address,
             city: form.city,
             state: form.state,
@@ -268,6 +272,17 @@ export default function ContributeDialog({ onClose }: ContributeDialogProps) {
                     placeholder="Your full legal name" autoComplete="name"
                   />
                   <FieldError msg={errors.fullName} />
+                </div>
+
+                {/* Email */}
+                <div className="mb-4">
+                  <label className="field-label" htmlFor="c-email">Email Address *</label>
+                  <input
+                    id="c-email" type="email" className={`input-field ${errors.email ? 'error' : ''}`}
+                    value={form.email} onChange={(e) => set('email', e.target.value)}
+                    placeholder="you@example.com" autoComplete="email"
+                  />
+                  <FieldError msg={errors.email} />
                 </div>
 
                 {/* Address */}
