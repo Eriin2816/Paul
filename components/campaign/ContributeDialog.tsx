@@ -89,9 +89,29 @@ export default function ContributeDialog({ onClose }: ContributeDialogProps) {
     e.preventDefault()
     if (!validate()) return
     setFormState('submitting')
-    // Simulate async submission — connect real backend here
-    await new Promise((r) => setTimeout(r, 1200))
-    setFormState('success')
+    try {
+      await fetch(
+        'https://services.leadconnectorhq.com/hooks/xAD0Z9mbS7eaDhlgLdoF/webhook-trigger/62f582e8-1c39-452c-8353-c7d3248e20cb',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: form.fullName,
+            address: form.address,
+            city: form.city,
+            state: form.state,
+            zip: form.zip,
+            occupation: form.occupation,
+            employer: form.employer,
+            amount: finalAmount,
+            message: form.message,
+          }),
+        }
+      )
+      setFormState('success')
+    } catch {
+      setFormState('error')
+    }
   }
 
   const set = (field: keyof FormData, value: string | number) =>

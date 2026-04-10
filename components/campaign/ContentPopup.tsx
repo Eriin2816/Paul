@@ -1,7 +1,7 @@
 'use client'
 
 import {
-  useEffect, useRef, useCallback, useState, ChangeEvent,
+  useEffect, useRef, useCallback, useState,
 } from 'react'
 import {
   sections, uiLabels, t, type Lang, type ContentBlock, type SectionData,
@@ -196,96 +196,10 @@ function EventsRenderer({ section, lang }: { section: SectionData; lang: Lang })
   )
 }
 
-// ── News renderer with video upload ──────────────────────────────────────────
+// ── News renderer ────────────────────────────────────────────────────────────
 function NewsRenderer({ section, lang }: { section: SectionData; lang: Lang }) {
-  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null)
-  const [videoName, setVideoName] = useState<string>('')
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const url = URL.createObjectURL(file)
-    setUploadedVideoUrl(url)
-    setVideoName(file.name)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (uploadedVideoUrl) URL.revokeObjectURL(uploadedVideoUrl)
-    }
-  }, [uploadedVideoUrl])
-
   return (
     <div className="space-y-5 mt-2">
-      {/* Video upload area */}
-      <div
-        className="rounded-2xl p-5"
-        style={{
-          background: 'var(--navy-faint)',
-          border: '1.5px dashed rgba(28,49,96,0.25)',
-        }}
-      >
-        <p
-          className="text-sm font-bold mb-1"
-          style={{ color: 'var(--navy)' }}
-        >
-          📹 Campaign Video
-        </p>
-        <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-          Upload a campaign video from your computer to preview it here. (Local preview only — connect backend to publish.)
-        </p>
-
-        {uploadedVideoUrl ? (
-          <div>
-            <video
-              src={uploadedVideoUrl}
-              controls
-              className="w-full rounded-xl mb-2"
-              style={{ maxHeight: '260px', background: '#000' }}
-              aria-label={`Uploaded video: ${videoName}`}
-            />
-            <div className="flex items-center justify-between">
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                {videoName}
-              </span>
-              <button
-                onClick={() => { setUploadedVideoUrl(null); setVideoName('') }}
-                className="text-xs font-semibold px-3 py-1 rounded-lg"
-                style={{ background: 'var(--terra-pale)', color: 'var(--terra)', border: '1px solid var(--terra-light)' }}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold"
-            style={{
-              background: 'var(--navy)',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background 0.2s ease',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--navy-mid)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--navy)' }}
-          >
-            <span aria-hidden="true">⬆</span> Upload Video from Computer
-          </button>
-        )}
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="video/*"
-          onChange={handleFileChange}
-          className="sr-only"
-          aria-label="Upload campaign video"
-        />
-      </div>
-
       {/* News items */}
       {section.news?.map((item) => (
         <div
