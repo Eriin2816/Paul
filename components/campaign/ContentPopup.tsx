@@ -383,10 +383,29 @@ export default function ContentPopup({ sectionId, onClose }: ContentPopupProps) 
     window.print()
   }, [])
 
-  const handlePdfExport = useCallback(() => {
-    // Uses browser's native "Save as PDF" via print dialog
-    window.print()
-  }, [])
+  const handlePdfExport = useCallback(async () => {
+    const node = printZoneRef.current
+    if (!node) return
+    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+      import('html2canvas'),
+      import('jspdf'),
+    ])
+    const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff' })
+    const imgData = canvas.toDataURL('image/png')
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' })
+    const pageW = pdf.internal.pageSize.getWidth()
+    const pageH = pdf.internal.pageSize.getHeight()
+    const ratio = canvas.width / canvas.height
+    const imgH = pageW / ratio
+    let y = 0
+    while (y < imgH) {
+      if (y > 0) pdf.addPage()
+      pdf.addImage(imgData, 'PNG', 0, -y, pageW, imgH)
+      y += pageH
+    }
+    const filename = `Paul-Harold-Johnson-${title.replace(/\s+/g, '-')}.pdf`
+    pdf.save(filename)
+  }, [title])
 
   if (!section) return null
 
