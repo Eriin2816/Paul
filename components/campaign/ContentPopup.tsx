@@ -196,10 +196,44 @@ function EventsRenderer({ section, lang }: { section: SectionData; lang: Lang })
   )
 }
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/)
+  if (match) return `https://www.youtube.com/embed/${match[1]}`
+  if (url.includes('youtube.com/embed/')) return url
+  return null
+}
+
 // ── News renderer ────────────────────────────────────────────────────────────
 function NewsRenderer({ section, lang }: { section: SectionData; lang: Lang }) {
+  const embedUrl = section.videoUrl ? getYouTubeEmbedUrl(section.videoUrl) : null
+  const isDirectVideo = section.videoUrl && !embedUrl
+
   return (
     <div className="space-y-5 mt-2">
+      {/* Campaign video — shown when videoUrl is set */}
+      {section.videoUrl && (
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ border: '1.5px solid var(--border-light)' }}
+        >
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              title="Campaign Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ width: '100%', aspectRatio: '16/9', display: 'block', border: 'none' }}
+            />
+          ) : isDirectVideo ? (
+            <video
+              src={section.videoUrl}
+              controls
+              style={{ width: '100%', maxHeight: '320px', display: 'block', background: '#000' }}
+            />
+          ) : null}
+        </div>
+      )}
+
       {/* News items */}
       {section.news?.map((item) => (
         <div
