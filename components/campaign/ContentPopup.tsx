@@ -403,9 +403,10 @@ export default function ContentPopup({ sectionId, onClose }: ContentPopupProps) 
       pdf.addImage(imgData, 'PNG', 0, -y, pageW, imgH)
       y += pageH
     }
-    const filename = `Paul-Harold-Johnson-${title.replace(/\s+/g, '-')}.pdf`
+    const sectionTitle = section ? t(section.label, lang) : 'Campaign'
+    const filename = `Paul-Harold-Johnson-${sectionTitle.replace(/\s+/g, '-')}.pdf`
     pdf.save(filename)
-  }, [title])
+  }, [section, lang])
 
   if (!section) return null
 
