@@ -921,9 +921,7 @@ export const sections: SectionData[] = [
     id: 'news-media',
     icon: '📰',
     label: ml('News & Media', 'Noticias y Medios', 'Balita at Media', 'Actualités et médias'),
-    // ▶ PASTE YOUR VIDEO LINK HERE (YouTube URL or direct .mp4 URL)
-    // Example: videoUrl: 'https://www.youtube.com/watch?v=YOUR_VIDEO_ID',
-    videoUrl: '',
+    videoUrl: 'https://youtube.com/shorts/EbxaJYarED4?feature=share',
     blocks: [
       {
         type: 'h2',

@@ -197,7 +197,7 @@ function EventsRenderer({ section, lang }: { section: SectionData; lang: Lang })
 }
 
 function getYouTubeEmbedUrl(url: string): string | null {
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/)
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{11})/)
   if (match) return `https://www.youtube.com/embed/${match[1]}`
   if (url.includes('youtube.com/embed/')) return url
   return null
